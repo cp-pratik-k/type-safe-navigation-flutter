@@ -14,14 +14,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Home'),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.person),
-              onPressed: () {
-                ProfileRoute().push(context);
-              },
-            ),
-          ],
         ),
         body: ListView.builder(
           itemCount: 20,

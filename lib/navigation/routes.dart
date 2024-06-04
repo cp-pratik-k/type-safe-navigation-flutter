@@ -2,17 +2,38 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nested_navigation/screens/profile_screen.dart';
 import 'package:nested_navigation/screens/verify_otp_screen.dart';
+import '../screens/dashboard_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/item_details_screen.dart';
 import '../screens/sign_in_screen.dart';
 
 part 'routes.g.dart';
 
+final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 
-@TypedGoRoute<HomeRoute>(
-  path: '/',
-  routes: [TypedGoRoute<ItemDetailsRoute>(path: 'items/:id')],
+@TypedShellRoute<DashboardShellRoute>(
+  routes: <TypedRoute<RouteData>>[
+    TypedGoRoute<HomeRoute>(
+      path: '/',
+      routes: [
+        TypedGoRoute<ItemDetailsRoute>(path: 'items/:id'),
+      ],
+    ),
+    TypedGoRoute<ProfileRoute>(path: '/profile'),
+  ],
 )
+class DashboardShellRoute extends ShellRouteData {
+  const DashboardShellRoute();
+
+  static final GlobalKey<NavigatorState> $navigatorKey = shellNavigatorKey;
+
+  @override
+  Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
+    // In the navigator, we get the current tab widget.
+    return MyDashboardScreen(child: navigator);
+  }
+}
+
 class HomeRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) => const HomeScreen();
@@ -26,6 +47,12 @@ class ItemDetailsRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       ItemDetailsScreen(id: id);
+}
+
+class ProfileRoute extends GoRouteData {
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const ProfileScreen();
 }
 
 @TypedGoRoute<SignInRoute>(
@@ -46,11 +73,4 @@ class VerifyRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       VerifyOTPScreen(verificationId: $extra);
-}
-
-@TypedGoRoute<ProfileRoute>(path: '/profile')
-class ProfileRoute extends GoRouteData {
-  @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const ProfileScreen();
 }
